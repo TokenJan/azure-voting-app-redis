@@ -48,7 +48,8 @@ pipeline {
         stage('build') {
             steps {
                 echo 'build'
-                sh 'docker build --tag ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer) .'
+                sh 'docker-compose up --build -d'
+                sh 'docker tag azure-vote-front ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
             }
         }
         stage('publish') {
