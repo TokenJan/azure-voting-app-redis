@@ -64,7 +64,7 @@ pipeline {
                     steps {
                         withKubeConfig([credentialsId: 'kubernetes',
                             serverUrl: 'https://jan-k8s-dns-2c96c686.hcp.southeastasia.azmk8s.io:443',
-                            caCertificate: ${KUBE_CA},
+                            caCertificate: '${KUBE_CA}',
                             contextName: 'jan-k8s',
                             clusterName: 'jan-k8s',
                             namespace: 'default'
