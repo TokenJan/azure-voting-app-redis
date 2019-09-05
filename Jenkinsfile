@@ -62,7 +62,7 @@ pipeline {
             parallel {
                 stage('deploy') {
                     steps {
-                        withKubeConfig([credentialsId: 'kubernetes',
+                        withKubeConfig([credentialsId: 'kubenetes',
                             serverUrl: 'https://jan-k8s-dns-2c96c686.hcp.southeastasia.azmk8s.io:443',
                             contextName: 'jan-k8s',
                             clusterName: 'jan-k8s',
