@@ -69,7 +69,7 @@ pipeline {
                             clusterName: 'jan-k8s',
                             namespace: 'default'
                         ]) {
-                            sh 'kubectl get --insecure-skip-tls-verify=true pods'
+                            'kubectl set image deployment azure-vote-front azure-vote-front=tokenjanacr.azurecr.io/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
                         }
                     }
                 }
