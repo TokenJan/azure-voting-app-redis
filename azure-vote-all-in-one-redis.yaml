@@ -48,7 +48,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: microsoft/azure-vote-front:v1
+        image: tokenjanacr.azurecr.io/azure-vote-front:v1
         ports:
         - containerPort: 80
         resources:
@@ -59,6 +59,8 @@ spec:
         env:
         - name: REDIS
           value: "azure-vote-back"
+      imagePullSecrets:
+      - name: acr-auth
 ---
 apiVersion: v1
 kind: Service
