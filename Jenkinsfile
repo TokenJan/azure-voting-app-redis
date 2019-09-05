@@ -62,7 +62,14 @@ pipeline {
             parallel {
                 stage('deploy') {
                     steps {
-                        sh 'kubectl set image deployment azure-vote-front azure-vote-front=tokenjanacr.azurecr.io/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+                        withKubeConfig([credentialsId: 'kubernetes',
+                            serverUrl: 'https://jan-k8s-dns-2c96c686.hcp.southeastasia.azmk8s.io:443',
+                            contextName: 'jan-k8s',
+                            clusterName: 'jan-k8s',
+                            namespace: 'default'
+                        ]) {
+                            sh 'kubectl set image deployment azure-vote-front azure-vote-front=tokenjanacr.azurecr.io/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+                        }
                     }
                 }
                 stage('contract test') {
