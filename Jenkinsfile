@@ -1,5 +1,5 @@
 node {
-    def SEMVER = '$(docker run --rm --volume "$(pwd):/repo" gittools/gitversion:5.0.0-linux-centos7-netcoreapp2.1 /repo -output json -showvariable FullSemVer)'
+    def SEMVER = sh(script: 'docker run --rm --volume "$(pwd):/repo" gittools/gitversion:5.0.0-linux-centos7-netcoreapp2.1 /repo -output json -showvariable FullSemVer', returnStdout: true)
 
     stage('style check') {
         echo 'style check'
