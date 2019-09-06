@@ -48,12 +48,14 @@ pipeline {
         stage('build and publish') {
             steps {
                 echo 'build'
+                def SEMVER = '$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+
                 dir("azure-vote/") {
                     sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:latest .'
-                    sh 'docker tag ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+                    sh 'docker tag ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$SEMVER'
                     sh 'docker login -u $ACR_USER -p $ACR_PASSWORD $ACR_LOGINSERVER'
-                    sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
-                    sh 'docker rmi ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+                    sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:$SEMVER'
+                    sh 'docker rmi ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$SEMVER'
                 }
             }
         }
