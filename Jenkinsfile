@@ -49,7 +49,7 @@ pipeline {
             steps {
                 echo 'build'
                 dir("azure-app/") {
-                    sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:latest'
+                    sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:latest .'
                     sh 'docker tag ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
                     sh 'docker login -u $ACR_USER -p $ACR_PASSWORD $ACR_LOGINSERVER'
                     sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
