@@ -49,7 +49,7 @@ pipeline {
                             credentialsId: 'kubernetes',
                             serverUrl: 'https://jan-k8s-dns-2c96c686.hcp.southeastasia.azmk8s.io:443'
                         ]) {
-                            sh 'kubectl set image deployment azure-vote-front azure-vote-front=tokenjanacr.azurecr.io/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+                            sh 'helm upgrade azure-vote ./azure-vote-chart'
                         }
                     }
                 }
