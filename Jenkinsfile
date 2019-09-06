@@ -49,7 +49,7 @@ pipeline {
                             credentialsId: 'kubernetes',
                             serverUrl: 'https://jan-k8s-dns-2c96c686.hcp.southeastasia.azmk8s.io:443'
                         ]) {
-                            sh 'kubectl set image deployment azure-vote-front azure-vote-front=tokenjanacr.azurecr.io/azure-vote-front:latest'
+                            sh 'kubectl rollout restart deployment.extensions/azure-vote-front'
                         }
                     }
                 }
