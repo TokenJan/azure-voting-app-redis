@@ -45,7 +45,7 @@ pipeline {
             }
         }
 
-        stage('build and publish) {
+        stage('build and publish') {
             steps {
                 echo 'build'
                 dir("azure-app/") {
