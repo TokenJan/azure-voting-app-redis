@@ -48,7 +48,9 @@ pipeline {
         stage('build and publish') {
             steps {
                 echo 'build'
-                def SEMVER = '$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+                script {
+                    SEMVER = '$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+                }
 
                 dir("azure-vote/") {
                     sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:latest .'
