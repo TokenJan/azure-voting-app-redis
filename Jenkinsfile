@@ -13,16 +13,11 @@ node {
     }
 
     stage('build and publish') {
-        echo 'build'
-        SEMVER = sh(script: 'docker run --rm --volume "$(pwd):/repo" gittools/gitversion:5.0.0-linux-centos7-netcoreapp2.1 /repo -output json -showvariable FullSemVer', returnStdout: true)
-
-        dir("azure-vote/") {
-            sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:latest .'
-            sh 'docker tag ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:${SEMVER}'
-            sh 'docker login -u $ACR_USER -p $ACR_PASSWORD $ACR_LOGINSERVER'
-            sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:${SEMVER}'
-            sh 'docker rmi ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:${SEMVER}'
-        }
+        sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:latest azure-vote/'
+        sh 'docker tag ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" gittools/gitversion:5.0.0-linux-centos7-netcoreapp2.1 /repo -output json -showvariable FullSemVer)'
+        sh 'docker login -u $ACR_USER -p $ACR_PASSWORD $ACR_LOGINSERVER'
+        sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" gittools/gitversion:5.0.0-linux-centos7-netcoreapp2.1 /repo -output json -showvariable FullSemVer)'
+        sh 'docker rmi ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" gittools/gitversion:5.0.0-linux-centos7-netcoreapp2.1 /repo -output json -showvariable FullSemVer)'
     }
 
     stage('deploy') {
