@@ -48,7 +48,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: tokenjanacr.azurecr.io/azure-vote-front
+        image: tokenjanacr.azurecr.io/azure-vote-front:latest
         ports:
         - containerPort: 80
         resources:
