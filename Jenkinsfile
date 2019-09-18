@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        VERSION   = '3.0'
+        VERSION   = '4.0'
     }
     stages {
         stage('pre-build') {
