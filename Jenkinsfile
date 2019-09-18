@@ -37,30 +37,16 @@ pipeline {
                 sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:${VERSION}'
             }
         }
-
-        stage('deploy:dev') {
-            parallel {
-                stage('deploy') {
-                    steps {
-                        withKubeConfig([
-                            credentialsId: 'ec-aks-prod',
-                            serverUrl: 'https://ec-prod-k8s-dns-3482a302.hcp.japanwest.azmk8s.io'
-                        ]) {
-                            sh 'kubectl set image deployment azure-vote-front azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:${VERSION} -n default'
-                        }
-                    }
+        
+        stage('deploy') {
+            steps {
+                withKubeConfig([
+                    credentialsId: 'ec-aks-prod',
+                    serverUrl: 'https://ec-prod-k8s-dns-3482a302.hcp.japanwest.azmk8s.io'
+                ]) {
+                    sh 'kubectl set image deployment azure-vote-front azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:${VERSION} -n default'
                 }
-                stage('contract test') {
-                    steps {
-                        echo 'contract test'
-                    }
-                }
-                stage('sonarqube scanning') {
-                    steps {
-                        echo 'sonarqube scanning'
-                    }
-                }
-            }   
+            }
         }
     }
 }
