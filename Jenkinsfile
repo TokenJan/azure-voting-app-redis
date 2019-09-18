@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        GITVERSION   = 'gittools/gitversion:5.0.0-linux-centos7-netcoreapp2.1'
+        VERSION   = '3.0'
     }
     stages {
         stage('pre-build') {
@@ -33,8 +33,8 @@ pipeline {
             steps {
                 echo 'build'
                 sh 'docker login -u $ACR_USER -p $ACR_PASSWORD $ACR_LOGINSERVER'
-                sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:2.0 azure-vote/'
-                sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:2.0'
+                sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:${VERSION} azure-vote/'
+                sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:${VERSION}'
             }
         }
 
@@ -46,7 +46,7 @@ pipeline {
                             credentialsId: 'ec-aks-prod',
                             serverUrl: 'https://ec-prod-k8s-dns-3482a302.hcp.japanwest.azmk8s.io'
                         ]) {
-                            sh 'kubectl set image deployment azure-vote-front azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:2.0 -n default'
+                            sh 'kubectl set image deployment azure-vote-front azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:${VERSION} -n default'
                         }
                     }
                 }
