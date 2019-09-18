@@ -33,8 +33,8 @@ pipeline {
             steps {
                 echo 'build'
                 sh 'docker login -u $ACR_USER -p $ACR_PASSWORD $ACR_LOGINSERVER'
-                sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer) azure-vote/'
-                sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
+                sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:1.0 azure-vote/'
+                sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:1.0'
             }
         }
 
@@ -46,7 +46,7 @@ pipeline {
                             credentialsId: 'ec-aks-prod',
                             serverUrl: 'https://ec-prod-k8s-dns-3482a302.hcp.japanwest.azmk8s.io'
                         ]) {
-                            sh 'kubectl set image deployment azure-vote-frontend azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer) -n default'
+                            sh 'kubectl set image deployment azure-vote-frontend azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:1.0 -n default'
                         }
                     }
                 }
