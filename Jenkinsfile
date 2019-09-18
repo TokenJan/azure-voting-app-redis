@@ -46,7 +46,7 @@ pipeline {
                             credentialsId: 'ec-aks-prod',
                             serverUrl: 'https://ec-prod-k8s-dns-3482a302.hcp.japanwest.azmk8s.io'
                         ]) {
-                            sh 'kubectl set image deployment azure-vote-frontend azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:1.0 -n default'
+                            sh 'kubectl set image deployment azure-vote-front azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:1.0 -n default'
                         }
                     }
                 }
