@@ -32,12 +32,9 @@ pipeline {
         stage('build and publish') {
             steps {
                 echo 'build'
-                sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:latest azure-vote/'
-                sh 'docker tag ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
                 sh 'docker login -u $ACR_USER -p $ACR_PASSWORD $ACR_LOGINSERVER'
+                sh 'docker build -t ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer) azure-vote/'
                 sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
-                sh 'docker push ${ACR_LOGINSERVER}/azure-vote-front:latest'
-                sh 'docker rmi ${ACR_LOGINSERVER}/azure-vote-front:latest ${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer)'
             }
         }
 
@@ -46,10 +43,10 @@ pipeline {
                 stage('deploy') {
                     steps {
                         withKubeConfig([
-                            credentialsId: 'kubernetes',
-                            serverUrl: 'https://jan-k8s-dns-2c96c686.hcp.southeastasia.azmk8s.io:443'
+                            credentialsId: 'ec-aks-prod',
+                            serverUrl: 'https://ec-prod-k8s-dns-3482a302.hcp.japanwest.azmk8s.io'
                         ]) {
-                            sh 'helm upgrade azure-vote ./azure-vote-chart'
+                            sh 'kubectl set image deployment azure-vote-frontend azure-vote-front=${ACR_LOGINSERVER}/azure-vote-front:$(docker run --rm --volume "$(pwd):/repo" $GITVERSION /repo -output json -showvariable FullSemVer) -n default'
                         }
                     }
                 }
